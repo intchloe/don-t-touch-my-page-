@@ -12,6 +12,7 @@ from stem.descriptor.remote import DescriptorDownloader
 from stem.util import term
 
 SOCKS_PORT = 1339
+TIMEOUT = 15
 
 argparse = argparse.ArgumentParser()
 argparse.add_argument("-u", "--url", dest="url", help="URL to be checked")
@@ -64,7 +65,7 @@ def main():
                       'SocksPort': str(SOCKS_PORT),
                       'ExitNodes': str(line),
                       "DataDirectory": tempfile.gettempdir() + os.pathsep + str(SOCKS_PORT)
-            })
+            }, timeout=TIMEOUT)
             
             r2 = requests.get(url)
             tor_process.kill()
