@@ -20,7 +20,11 @@ args = argparse.parse_args()
 
 global url
 global file
-url = args.url or "http://www.reddit.com/"
+url = args.url
+
+if url is None:
+    url = "http://www.reddit.com/"
+    print("URL was not specified, defaulting to " + url)
 
 if url.startswith("https://"):
     print(term.format("Detected HTTPS connection, should be plaintext (HTTP)", term.Color.RED))
