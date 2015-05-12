@@ -82,6 +82,12 @@ def main():
             ratio = m.ratio()
             ratio *= 100
             print(str(ratio) + " for fingerprint " + line)
+            
+            if ratio == 100:
+                print(term.format("100% matching for node " + line, term.Color.GREEN))
+            else:
+                print(term.format("Ratio " + str(ratio) + " not matching fully for node " + line, term.Color.RED))
+
 
         except Exception as e:
             print("Error: " + str(e) + " for " + line)
