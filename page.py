@@ -81,7 +81,6 @@ def main():
             m = SequenceMatcher(None, r2.content, r1.content)
             ratio = m.ratio()
             ratio *= 100
-            print(str(ratio) + " for fingerprint " + line)
             
             if ratio == 100:
                 print(term.format("100% matching for node " + line, term.Color.GREEN))
