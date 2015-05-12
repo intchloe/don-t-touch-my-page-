@@ -1,4 +1,3 @@
-
 import socket
 import requests
 import socks
@@ -82,10 +81,10 @@ def main():
             m = SequenceMatcher(None, r2.content, r1.content)
             ratio = m.ratio()
             ratio *= 100
-            print(ratio + " for fingerprint " + line)
+            print(str(ratio) + " for fingerprint " + line)
 
         except Exception as e:
-            print("Error: " + e + " for " + line)
+            print("Error: " + str(e) + " for " + line)
             if not tor_process is None:
                 tor_process.kill()
         if not tor_process is None:
