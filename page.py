@@ -61,6 +61,7 @@ socket.socket = socks.socksocket
 def main():
     file = open("fp.txt", mode="r")
     for line in file.readlines():
+        line = line.strip()
         tor_process = None
         try:
             tor_process = stem.process.launch_tor_with_config(
