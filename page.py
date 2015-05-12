@@ -88,9 +88,8 @@ def main():
             else:
                 print(term.format("Ratio " + str(ratio) + " not matching fully for node " + line, term.Color.RED))
                 f = open(str(line).strip('\n'), 'wb')
-                f.write(r.content)
+                f.write(r2.content)
                 f.close()
-                tor_process.kill()
 
         except Exception as e:
             print(term.format("Error: " + str(e) + " for " + line, term.Color.YELLOW))
