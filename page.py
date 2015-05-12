@@ -87,10 +87,13 @@ def main():
                 print(term.format("100% matching for node " + line, term.Color.GREEN))
             else:
                 print(term.format("Ratio " + str(ratio) + " not matching fully for node " + line, term.Color.RED))
-
+                f = open(str(line).strip('\n'), 'wb')
+                f.write(r.content)
+                f.close()
+                tor_process.kill()
 
         except Exception as e:
-            print("Error: " + str(e) + " for " + line)
+            print(term.format("Error: " + str(e) + " for " + line, term.Color.YELLOW))
             if not tor_process is None:
                 tor_process.kill()
         if not tor_process is None:
