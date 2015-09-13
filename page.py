@@ -1,4 +1,3 @@
-
 import socket
 import requests
 import socks
@@ -12,6 +11,7 @@ from stem.descriptor.remote import DescriptorDownloader
 from stem.util import term
 
 SOCKS_PORT = 1339
+TIMEOUT = 15
 
 argparse = argparse.ArgumentParser()
 argparse.add_argument("-u", "--url", dest="url", help="URL to be checked")
@@ -19,7 +19,11 @@ args = argparse.parse_args()
 
 global url
 global file
-url = args.url or "http://www.reddit.com/"
+url = args.url
+
+if url is None:
+    url = "http://www.reddit.com/"
+    print("URL was not specified, defaulting to " + url)
 
 if url.startswith("https://"):
     print(term.format("Detected HTTPS connection, should be plaintext (HTTP)", term.Color.RED))
@@ -57,6 +61,7 @@ socket.socket = socks.socksocket
 def main():
     file = open("fp.txt", mode="r")
     for line in file.readlines():
+        line = line.strip()
         tor_process = None
         try:
             tor_process = stem.process.launch_tor_with_config(
@@ -64,7 +69,7 @@ def main():
                       'SocksPort': str(SOCKS_PORT),
                       'ExitNodes': str(line),
                       "DataDirectory": tempfile.gettempdir() + os.pathsep + str(SOCKS_PORT)
-            })
+            }, timeout=TIMEOUT)
             
             r2 = requests.get(url)
             tor_process.kill()
@@ -77,10 +82,17 @@ def main():
             m = SequenceMatcher(None, r2.content, r1.content)
             ratio = m.ratio()
             ratio *= 100
-            print(ratio + " for fingerprint " + line)
+            
+            if ratio == 100:
+                print(term.format("100% matching for node " + line, term.Color.GREEN))
+            else:
+                print(term.format("Ratio " + str(ratio) + " not matching fully for node " + line, term.Color.RED))
+                f = open(str(line).strip('\n'), 'wb')
+                f.write(r2.content)
+                f.close()
 
         except Exception as e:
-            print("Error: " + e + " for " + line)
+            print(term.format("Error: " + str(e) + " for " + line, term.Color.YELLOW))
             if not tor_process is None:
                 tor_process.kill()
         if not tor_process is None:
